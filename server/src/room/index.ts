@@ -28,21 +28,39 @@ export const roomHandler = (socket: Socket) => {
       rooms[roomId].push(peerId);
 
       socket.join(roomId);
+
+      socket.to(roomId).emit("user-joined", { peerId });
+
       socket.emit("get-users", {
         roomId,
         participants: rooms[roomId],
       });
     }
-
     socket.on("disconnect", () => {
       console.log(`user left the room: ${peerId}`);
       leaveRoom({ roomId, peerId });
     });
+    // else {
+    //   console.warn(`Room ${roomId} does not exist.`);
+    //   socket.emit("error", "Room does not exist.");
+    // }
   };
 
   const leaveRoom = ({ peerId, roomId }: IRoomParams) => {
     rooms[roomId] = rooms[roomId].filter((id) => id !== peerId);
     socket.to(roomId).emit("user-disconnected", peerId);
+    // if (rooms[roomId]) {
+    //   rooms[roomId] = rooms[roomId].filter((id) => id !== peerId);
+
+    //   socket.to(roomId).emit("user-disconnected", peerId);
+
+    //   if (rooms[roomId].length === 0) {
+    //     delete rooms[roomId];
+    //     console.log(`Room ${roomId} deleted as it is now empty.`);
+    //   }
+    // } else {
+    //   console.warn(`Cannot leave room ${roomId} as it does not exist.`);
+    // }
   };
 
   socket.on("create-room", createRoom);
