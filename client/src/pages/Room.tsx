@@ -2,10 +2,11 @@ import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { RoomContext } from "../context/RoomContext";
 import VideoPlayer from "../components/VideoPlayer";
+import { PeerState } from "../context/peerReducer";
 
 const Room = () => {
   const { id } = useParams();
-  const { ws, me, stream } = useContext(RoomContext);
+  const { ws, me, stream, peers } = useContext(RoomContext);
   console.log(stream);
   useEffect(() => {
     if (me) {
@@ -20,12 +21,22 @@ const Room = () => {
   return (
     <div>
       Room id: {id}
-      <div>
-        {stream ? (
-          <VideoPlayer stream={stream} />
+      <div className="grid grid-cols-4 gap-4">
+        {stream && <VideoPlayer stream={stream} />}
+        {Object.values(peers as PeerState).map((peer, index) => (
+          <VideoPlayer key={index} stream={peer.stream} />
+        ))}
+
+        {/* {stream ? (
+          <div className="grid grid-cols-4 gap-4">
+            <VideoPlayer stream={stream} />
+            {Object.values(peers as PeerState).map((peer) => (
+              <VideoPlayer stream={peer.stream} />
+            ))}
+          </div>
         ) : (
-          <p>Loading stream...</p> // Puedes renderizar cualquier mensaje o componente aquí
-        )}
+          <p>Loading stream...</p>
+        )} */}
       </div>
     </div>
   );

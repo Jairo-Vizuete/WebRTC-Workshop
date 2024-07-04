@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 
 const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -8,7 +8,7 @@ const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
     }
   }, [stream]);
 
-  return <video ref={videoRef} autoPlay />;
+  return <video ref={videoRef} autoPlay muted={true} />;
 };
 
 export default VideoPlayer;
